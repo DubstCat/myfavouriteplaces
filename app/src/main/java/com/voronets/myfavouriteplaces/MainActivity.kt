@@ -2,9 +2,12 @@ package com.voronets.myfavouriteplaces
 
 import android.os.Bundle
 import android.view.View
+import android.widget.EditText
 import android.widget.FrameLayout
+import android.widget.LinearLayout
 import androidx.appcompat.app.AppCompatActivity
 import androidx.coordinatorlayout.widget.CoordinatorLayout
+import androidx.lifecycle.ViewModelProvider
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
@@ -13,23 +16,29 @@ import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.floatingactionbutton.FloatingActionButton
+import com.voronets.myfavouriteplaces.data.Point
+import com.voronets.myfavouriteplaces.data.PointViewModel
 
 class MainActivity : AppCompatActivity(),OnMapReadyCallback {
 
     private val places: ArrayList<LatLng> = ArrayList()
-    lateinit var lng: LatLng
-    lateinit var bottomSheetBehavior:BottomSheetBehavior<FrameLayout>
+    var lng: LatLng? = null
+    lateinit var fab: FloatingActionButton
+    lateinit var bottomSheetBehavior:BottomSheetBehavior<LinearLayout>
+    lateinit var pointViewModel:PointViewModel
+    private lateinit var mPointViewModel: PointViewModel
+    private lateinit var etName:EditText
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-        val bottomSheet = findViewById<FrameLayout>(R.id.containerBottomSheet)
+        pointViewModel = PointViewModel(application)
+        val bottomSheet = findViewById<LinearLayout>(R.id.containerBottomSheet)
         bottomSheetBehavior = BottomSheetBehavior.from(bottomSheet)
+        mPointViewModel = ViewModelProvider(this).get(PointViewModel::class.java)
 
-        places.add(LatLng(55.754724, 37.621380));
-        places.add(LatLng(55.760133, 37.618697));
-        places.add(LatLng(55.764753, 37.591313));
 
-        val fab = findViewById<FloatingActionButton>(R.id.fab);
+        etName = findViewById(R.id.et_name)
+        fab = findViewById<FloatingActionButton>(R.id.fab);
 
         val coordinatorLayout = findViewById<CoordinatorLayout>(R.id.coordinator)
 
@@ -50,7 +59,20 @@ class MainActivity : AppCompatActivity(),OnMapReadyCallback {
     }
 
     override fun onMapReady(googleMap: GoogleMap?) {
-        val markers = arrayOfNulls<MarkerOptions>(places.size)
+        var markers = arrayOfNulls<MarkerOptions>(places.size)
+        fab.setOnClickListener{
+            if(lng!=null && etName.text.toString().isNotEmpty()) {
+                places.add(lng!!)
+                markers = arrayOfNulls<MarkerOptions>(places.size)
+                for (i in places.indices) {
+                    markers[i] = MarkerOptions()
+                        .position(places[i])
+                    googleMap!!.addMarker(markers[i])
+                }
+            }
+            insertDataToDatabase()
+        }
+
         for (i in places.indices) {
             markers[i] = MarkerOptions()
                 .position(places[i])
@@ -67,4 +89,12 @@ class MainActivity : AppCompatActivity(),OnMapReadyCallback {
         }
     }
 
+    fun addPoint(){
+        val pointViewModel = PointViewModel(application)
+    }
+
+    private fun insertDataToDatabase(){
+        val point = Point(0,etName.text.toString() ,lng!!.latitude, lng!!.longitude)
+        mPointViewModel.addPoint(point)
+    }
 }
