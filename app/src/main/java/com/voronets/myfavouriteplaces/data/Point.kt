@@ -1,3 +1,11 @@
 package com.voronets.myfavouriteplaces.data
 
-class Point (xCoordinate: Double, yCoordinate: Double)
+import androidx.room.PrimaryKey
+
+data class Point (
+    @PrimaryKey(autoGenerate = true)
+    val id:Int,
+    val name: String,
+    val latitude: Double,
+    val longitude: Double
+)
