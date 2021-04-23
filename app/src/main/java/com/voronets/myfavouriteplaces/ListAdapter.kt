@@ -17,7 +17,6 @@ class ListAdapter: RecyclerView.Adapter<ListAdapter.MyViewHolder>() {
         return MyViewHolder(LayoutInflater.from((parent.context)).inflate(R.layout.item_layout, parent, false))
     }
 
-
     override fun getItemCount(): Int {
         return pointList.size
     }
@@ -32,7 +31,4 @@ class ListAdapter: RecyclerView.Adapter<ListAdapter.MyViewHolder>() {
         this.pointList = points
         notifyDataSetChanged()
     }
-
-
-
 }
