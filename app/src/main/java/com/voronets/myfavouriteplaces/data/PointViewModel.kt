@@ -8,7 +8,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
 class PointViewModel(application: Application): AndroidViewModel(application) {
-    private val readAllData: LiveData<List<Point>>
+    val readAllData: LiveData<List<Point>>
     private val repository: PointRepository
 
     init {

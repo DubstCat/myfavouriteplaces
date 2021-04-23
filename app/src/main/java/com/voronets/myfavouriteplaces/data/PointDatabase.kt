@@ -21,7 +21,7 @@ abstract class PointDatabase:RoomDatabase() {
                 val instance = Room.databaseBuilder(
                     context.applicationContext,
                     PointDatabase::class.java,
-                    "user_database"
+                    "point_database"
                 ).build()
                 INSTANCE = instance
                 return instance

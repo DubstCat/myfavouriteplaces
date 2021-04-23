@@ -2,12 +2,13 @@ package com.voronets.myfavouriteplaces
 
 import android.os.Bundle
 import android.view.View
-import android.widget.EditText
-import android.widget.FrameLayout
-import android.widget.LinearLayout
+import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
 import androidx.coordinatorlayout.widget.CoordinatorLayout
+import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
@@ -20,7 +21,6 @@ import com.voronets.myfavouriteplaces.data.Point
 import com.voronets.myfavouriteplaces.data.PointViewModel
 
 class MainActivity : AppCompatActivity(),OnMapReadyCallback {
-
     private val places: ArrayList<LatLng> = ArrayList()
     var lng: LatLng? = null
     lateinit var fab: FloatingActionButton
@@ -28,6 +28,9 @@ class MainActivity : AppCompatActivity(),OnMapReadyCallback {
     lateinit var pointViewModel:PointViewModel
     private lateinit var mPointViewModel: PointViewModel
     private lateinit var etName:EditText
+
+
+    private var points = arrayListOf<Point>()
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
@@ -35,6 +38,12 @@ class MainActivity : AppCompatActivity(),OnMapReadyCallback {
         val bottomSheet = findViewById<LinearLayout>(R.id.containerBottomSheet)
         bottomSheetBehavior = BottomSheetBehavior.from(bottomSheet)
         mPointViewModel = ViewModelProvider(this).get(PointViewModel::class.java)
+
+        val adapter = ListAdapter()
+        val recyclerView = findViewById<RecyclerView>(R.id.rv_points)
+        recyclerView.adapter = adapter
+
+        mPointViewModel.readAllData.observe(this, Observer { points - adapter.setData(points) })
 
 
         etName = findViewById(R.id.et_name)
@@ -69,8 +78,9 @@ class MainActivity : AppCompatActivity(),OnMapReadyCallback {
                         .position(places[i])
                     googleMap!!.addMarker(markers[i])
                 }
+                insertDataToDatabase()
+
             }
-            insertDataToDatabase()
         }
 
         for (i in places.indices) {
@@ -96,5 +106,8 @@ class MainActivity : AppCompatActivity(),OnMapReadyCallback {
     private fun insertDataToDatabase(){
         val point = Point(0,etName.text.toString() ,lng!!.latitude, lng!!.longitude)
         mPointViewModel.addPoint(point)
+        refreshRecyclerView()
+    }
+    fun refreshRecyclerView(){
     }
 }
