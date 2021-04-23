@@ -13,4 +13,7 @@ interface PointDao {
 
     @Query("SELECT * FROM point_table ORDER BY id ASC")
     fun readAllData(): LiveData<List<Point>>
-}
+
+    @Query("DELETE FROM point_table")
+    fun nukeTable()
+    }

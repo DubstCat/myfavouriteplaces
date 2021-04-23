@@ -1,6 +1,7 @@
 package com.voronets.myfavouriteplaces
 
 import android.os.Bundle
+import android.view.MotionEvent
 import android.view.View
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
@@ -29,7 +30,6 @@ class MainActivity : AppCompatActivity(),OnMapReadyCallback {
     private lateinit var mPointViewModel: PointViewModel
     private lateinit var etName:EditText
 
-
     private var points = arrayListOf<Point>()
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -38,18 +38,10 @@ class MainActivity : AppCompatActivity(),OnMapReadyCallback {
         val bottomSheet = findViewById<LinearLayout>(R.id.containerBottomSheet)
         bottomSheetBehavior = BottomSheetBehavior.from(bottomSheet)
         mPointViewModel = ViewModelProvider(this).get(PointViewModel::class.java)
-
-        val adapter = ListAdapter()
-        val recyclerView = findViewById<RecyclerView>(R.id.rv_points)
-        recyclerView.adapter = adapter
-
-        mPointViewModel.readAllData.observe(this, Observer { points - adapter.setData(points) })
-
+        refreshList()
 
         etName = findViewById(R.id.et_name)
         fab = findViewById<FloatingActionButton>(R.id.fab);
-
-        val coordinatorLayout = findViewById<CoordinatorLayout>(R.id.coordinator)
 
         bottomSheetBehavior.isHideable = false
         // настройка колбэков при изменениях
@@ -78,11 +70,11 @@ class MainActivity : AppCompatActivity(),OnMapReadyCallback {
                         .position(places[i])
                     googleMap!!.addMarker(markers[i])
                 }
+                refreshList()
                 insertDataToDatabase()
-
+                etName.text.clear()
             }
         }
-
         for (i in places.indices) {
             markers[i] = MarkerOptions()
                 .position(places[i])
@@ -97,17 +89,27 @@ class MainActivity : AppCompatActivity(),OnMapReadyCallback {
             googleMap.addMarker(markerOptions)
             lng = it
         }
-    }
-
-    fun addPoint(){
-        val pointViewModel = PointViewModel(application)
+        refreshList()
+        findViewById<FloatingActionButton>(R.id.fab_delete).setOnClickListener{
+            deleteAll()
+            refreshList()
+        }
     }
 
     private fun insertDataToDatabase(){
         val point = Point(0,etName.text.toString() ,lng!!.latitude, lng!!.longitude)
         mPointViewModel.addPoint(point)
-        refreshRecyclerView()
     }
-    fun refreshRecyclerView(){
+
+    private fun deleteAll(){
+        mPointViewModel.nukeTable()
+    }
+    fun refreshList(){
+        val adapter = ListAdapter()
+        val recyclerView = findViewById<RecyclerView>(R.id.rv_points)
+        recyclerView.layoutManager = LinearLayoutManager(this)
+        recyclerView.adapter = adapter
+        mPointViewModel.readAllData.observe(this, Observer { places -> adapter.setData(places) })
+        recyclerView.adapter = adapter
     }
 }

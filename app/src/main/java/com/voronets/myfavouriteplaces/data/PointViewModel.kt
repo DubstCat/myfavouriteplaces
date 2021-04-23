@@ -22,4 +22,9 @@ class PointViewModel(application: Application): AndroidViewModel(application) {
             repository.addPoint(point)
         }
     }
+    fun nukeTable(){
+        viewModelScope.launch(Dispatchers.IO){
+            repository.nukeTable()
+        }
+    }
 }

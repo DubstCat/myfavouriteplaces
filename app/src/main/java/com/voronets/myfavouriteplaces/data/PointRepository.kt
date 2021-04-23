@@ -9,4 +9,7 @@ class PointRepository(private val pointDao: PointDao) {
     suspend fun addPoint(point:Point){
         pointDao.addPoint(point)
     }
+    suspend fun nukeTable(){
+        pointDao.nukeTable()
+    }
 }
