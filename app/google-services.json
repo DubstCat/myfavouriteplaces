@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "309794913580",
+    "project_id": "myfavouriteplaces-311607",
+    "storage_bucket": "myfavouriteplaces-311607.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:309794913580:android:26255c5784eeb60d2e8089",
+        "android_client_info": {
+          "package_name": "com.voronets.myfavouriteplaces"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "309794913580-ics5ssuqe35nm53m7cis31i0rfrqdafa.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBImy3v4MveliyZofxQTY-kf4adih872xE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "309794913580-ics5ssuqe35nm53m7cis31i0rfrqdafa.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
